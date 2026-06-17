@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WATITOTO — Generator Prediksi Bola</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --g:#ff6a00;--gl:#ff9a3c;--gd:#ff6a00aa;--gs:#ff6a0033;
+  --gneon:0 0 8px #ff6a00,0 0 20px #ff6a00,0 0 40px #ff9a3c;
+  --cr:#fff3e0;--bg:#000;--bg2:#0d0500;
+}
+body{background:#0d0d0d;font-family:'Poppins',sans-serif;color:var(--cr);min-height:100vh;}
+.topbar{display:flex;align-items:center;gap:12px;background:linear-gradient(90deg,#1a0800,#0d0500,#1a0800);border-bottom:2px solid var(--g);padding:10px 20px;box-shadow:0 2px 20px var(--gd);}
+.topbar-logo{height:50px;filter:drop-shadow(0 0 20px var(--g));}
+.topbar-title{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:900;color:var(--g);text-shadow:var(--gneon);letter-spacing:3px;}
+.date-header{text-align:center;padding:14px 20px;background:linear-gradient(180deg,#1a0800,#000);border-bottom:1px solid var(--gs);}
+.date-sub{font-size:.7rem;letter-spacing:3px;color:var(--gl);opacity:.7;text-transform:uppercase;margin-bottom:4px;}
+.date-val{font-family:'Cinzel',serif;font-size:1.6rem;font-weight:900;color:var(--g);text-shadow:var(--gneon);}
+.layout{display:grid;grid-template-columns:420px 1fr;gap:0;min-height:calc(100vh - 120px);}
+@media(max-width:900px){.layout{grid-template-columns:1fr;}}
+.left-panel{background:linear-gradient(180deg,#100400,#080200);border-right:2px solid var(--gs);padding:20px;display:flex;flex-direction:column;gap:16px;}
+.panel-section{background:rgba(255,106,0,.04);border:1px solid var(--gs);border-radius:12px;padding:16px;}
+.section-title{display:flex;align-items:center;gap:8px;font-family:'Cinzel',serif;font-size:.8rem;font-weight:900;color:var(--g);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;text-shadow:0 0 8px var(--g);}
+.section-title span{font-size:1rem;}
+.stats-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:4px;}
+.stat-mini-item{background:linear-gradient(180deg,#1f0800,#0a0300);border:1px solid var(--g);border-radius:8px;padding:8px 4px;text-align:center;box-shadow:0 0 8px var(--gs);}
+.stat-mini-num{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:900;color:var(--g);display:block;text-shadow:var(--gneon);}
+.stat-mini-lbl{font-size:8px;color:var(--gl);opacity:.8;letter-spacing:1px;text-transform:uppercase;display:block;margin-top:2px;}
+.input-textarea{width:100%;height:220px;resize:vertical;background:#050100;border:2px solid var(--gs);border-radius:10px;color:#ff9a3c;font-size:12px;font-family:'Poppins',monospace;padding:12px;outline:none;line-height:1.7;transition:border-color .2s;}
+.input-textarea:focus{border-color:var(--g);box-shadow:0 0 12px var(--gs);}
+.input-textarea::placeholder{color:#3a1a00;font-size:11px;}
+.hint-box{background:#050100;border:1px solid var(--gs);border-radius:8px;padding:10px 12px;font-size:11px;color:#8a4a20;line-height:1.7;}
+.hint-box strong{color:var(--gl);}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;}
+.btn{flex:1;min-width:120px;padding:11px 16px;border:none;border-radius:10px;font-family:'Cinzel',serif;font-size:.75rem;font-weight:900;letter-spacing:1.5px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-generate{background:linear-gradient(135deg,var(--g),var(--gl));color:#000;box-shadow:0 0 16px var(--gd);}
+.btn-generate:hover{transform:translateY(-1px);box-shadow:0 0 28px var(--gd);}
+.btn-clear{background:transparent;border:2px solid #3a1a00;color:#6a3a10;}
+.btn-clear:hover{border-color:var(--g);color:var(--g);}
+.output-textarea{width:100%;height:180px;resize:vertical;background:#050100;border:2px solid var(--gs);border-radius:10px;color:#ff6a00;font-size:11px;font-family:monospace;padding:12px;outline:none;line-height:1.6;}
+.output-textarea::placeholder{color:#2a1000;font-size:11px;}
+.btn-copy{width:100%;padding:11px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--g),var(--gl));color:#000;font-family:'Cinzel',serif;font-size:.75rem;font-weight:900;letter-spacing:2px;cursor:pointer;transition:all .2s;box-shadow:0 0 12px var(--gd);}
+.btn-copy:hover{box-shadow:0 0 24px var(--gd);}
+.copy-toast{display:none;text-align:center;padding:6px;font-size:11px;color:#00ff88;letter-spacing:1px;}
+.right-panel{background:#000;padding:20px;overflow-y:auto;}
+.preview-label{font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:2px;color:var(--g);opacity:.7;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.preview-label::after{content:'';flex:1;height:1px;background:var(--gs);}
+.preview-empty{text-align:center;padding:80px 20px;font-family:'Cinzel',serif;font-size:.85rem;color:#3a1a00;letter-spacing:2px;}
+.preview-empty span{font-size:2rem;display:block;margin-bottom:10px;opacity:.4;}
+
+/* preview styles */
+#preview-area .stats-bar{width:100%;margin:0 auto 14px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+#preview-area .stat-item{background:linear-gradient(180deg,#1f0800,#0a0300);border:2px solid var(--g);border-radius:13px;padding:11px 6px;text-align:center;box-shadow:0 0 14px var(--gs);}
+#preview-area .stat-num{font-family:'Cinzel',serif;font-size:20px;font-weight:900;color:var(--g);line-height:1;display:block;text-shadow:var(--gneon);}
+#preview-area .stat-lbl{font-size:9px;font-weight:700;color:var(--gl);opacity:.8;letter-spacing:1.2px;text-transform:uppercase;display:block;margin-top:3px;}
+#preview-area .marquee-wrap{overflow:hidden;white-space:nowrap;width:100%;margin:0 auto 16px;border:3px solid var(--g);border-radius:15px;background:linear-gradient(135deg,#1a0500,#000,#1a0500);padding:15px 0;box-shadow:0 0 24px var(--gd);}
+#preview-area .marquee-inner{display:inline-block;animation:marquee 38s linear infinite;padding-left:100%;font-size:clamp(11px,2.8vw,14px);font-weight:900;color:var(--g);text-shadow:0 0 12px var(--g),0 0 24px var(--gl);letter-spacing:1.5px;}
+#preview-area .filter-wrap{width:100%;margin:0 auto 14px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+#preview-area .filter-label{font-size:10px;color:var(--gl);opacity:.9;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:6px;display:block;}
+#preview-area .select-box{position:relative;}
+#preview-area .select-box::after{content:"\25BC";position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--g);font-size:10px;pointer-events:none;}
+#preview-area .fselect{width:100%;padding:9px 30px 9px 12px;background:rgba(0,0,0,.9);border:2px solid var(--g);border-radius:10px;color:var(--g);font-size:12px;font-weight:700;appearance:none;outline:none;cursor:pointer;}
+#preview-area .fsearch{width:100%;padding:9px 12px 9px 30px;background:rgba(0,0,0,.9);border:2px solid var(--g);border-radius:10px;color:var(--g);font-size:12px;font-weight:700;outline:none;font-family:'Poppins',sans-serif;}
+#preview-area .fsearch::placeholder{color:var(--gd);}
+#preview-area .search-box{position:relative;}
+#preview-area .search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--g);font-size:13px;pointer-events:none;}
+#preview-area .tap-hint{width:100%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border:2px solid var(--g);border-radius:10px;background:var(--gs);}
+#preview-area .hint-arrow{font-size:16px;display:inline-block;animation:arrowbounce 1s ease-in-out infinite;line-height:1;}
+#preview-area .hint-text{font-family:'Cinzel',serif;font-size:clamp(9px,2.2vw,11px);font-weight:700;color:var(--g);opacity:.85;letter-spacing:1px;}
+#preview-area .league-block{width:100%;margin:0 auto 22px;border:3px solid var(--g);border-radius:15px;padding:5px;background:rgba(0,0,0,.6);box-shadow:0 0 28px var(--gd),0 0 60px #ff6a0022;}
+#preview-area .league-inner{border-radius:10px;overflow:hidden;border:1px solid var(--gd);}
+#preview-area .league-crown{background:linear-gradient(180deg,#200a00,#0d0500);padding:8px 10px 6px;display:flex;align-items:center;justify-content:center;position:relative;border-bottom:1px solid var(--gs);overflow:hidden;}
+#preview-area .league-crown::after{content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,150,50,.3),transparent);transform:skewX(-20deg);animation:crownshine 1.8s ease-in-out infinite;}
+#preview-area .crown-name{font-family:'Cinzel',serif;font-size:clamp(9px,2.4vw,12px);font-weight:900;color:var(--g);letter-spacing:2px;text-transform:uppercase;text-align:center;text-shadow:0 0 10px var(--g),0 0 20px var(--gl);}
+#preview-area .match-count{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:linear-gradient(135deg,var(--g),var(--gl));color:#000;font-family:'Cinzel',serif;font-size:8px;font-weight:900;padding:2px 8px;border-radius:20px;white-space:nowrap;box-shadow:0 0 10px var(--g);}
+#preview-area .match-card{border-bottom:1px solid #2a1500;cursor:pointer;user-select:none;}
+#preview-area .match-card:last-child{border-bottom:none;}
+#preview-area .match-card.hidden{display:none;}
+#preview-area .match-row{display:flex;align-items:center;padding:10px;transition:background .2s;}
+#preview-area .match-card.even .match-row{background:linear-gradient(180deg,#1e0800,#160500);}
+#preview-area .match-card.odd .match-row{background:linear-gradient(180deg,#160500,#1e0800);}
+#preview-area .match-card.open .match-row{background:linear-gradient(180deg,#2a1200,#1a0700)!important;}
+#preview-area .match-card:not(.open) .match-row:hover{background:linear-gradient(135deg,#ff6a00,#ff9a3c)!important;}
+#preview-area .match-card:not(.open) .match-row:hover .team-name,
+#preview-area .match-card:not(.open) .match-row:hover .score-num,
+#preview-area .match-card:not(.open) .match-row:hover .match-dt{color:#000!important;text-shadow:none!important;}
+#preview-area .team-side{flex:1;display:flex;align-items:center;gap:7px;min-width:0;}
+#preview-area .team-side.right{flex-direction:row-reverse;}
+#preview-area .box-image{position:relative;width:36px;height:36px;flex-shrink:0;}
+#preview-area .box-image img.team-logo{width:36px;height:36px;object-fit:contain;display:block;filter:drop-shadow(0 0 4px rgba(0,0,0,.7));transition:transform .4s ease,filter .4s ease;}
+#preview-area .match-row:hover .box-image img.team-logo{transform:scale(1.4);filter:drop-shadow(0 0 14px var(--g)) brightness(1.2);}
+#preview-area .team-name{font-size:clamp(8px,2vw,11px);font-weight:700;color:var(--cr);line-height:1.3;word-break:break-word;}
+#preview-area .team-side.right .team-name{text-align:right;}
+#preview-area .score-center{flex-shrink:0;width:80px;text-align:center;padding:0 4px;}
+#preview-area .score-num{font-family:'Cinzel',serif;font-size:clamp(15px,4vw,20px);font-weight:900;color:var(--g);text-shadow:var(--gneon);letter-spacing:3px;line-height:1;margin-bottom:4px;}
+#preview-area .match-dt{font-size:clamp(8px,1.8vw,10px);font-weight:700;color:var(--gl);opacity:.9;line-height:1.5;}
+#preview-area .chev{width:18px;flex-shrink:0;margin-left:4px;display:flex;align-items:center;justify-content:center;}
+#preview-area .chev svg{transition:transform .25s;color:var(--gd);}
+#preview-area .match-card.open .chev svg{transform:rotate(180deg);color:var(--g);}
+#preview-area .pred-panel{overflow:hidden;max-height:0;transition:max-height .32s ease;}
+#preview-area .match-card.open .pred-panel{max-height:220px;}
+#preview-area .pred-inner{background:#0a0300;border-top:1px solid var(--gs);padding:10px 12px;}
+#preview-area .pred-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
+#preview-area .pred-col{background:rgba(255,106,0,.06);border:1px solid var(--gs);border-radius:9px;padding:8px 6px;text-align:center;position:relative;overflow:hidden;}
+#preview-area .pred-col::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+#preview-area .pred-col.accent-green::before{background:linear-gradient(90deg,transparent,#00ff88,transparent);}
+#preview-area .pred-col.accent-red::before{background:linear-gradient(90deg,transparent,#ff4040,transparent);}
+#preview-area .pred-col.accent-gold::before{background:linear-gradient(90deg,transparent,var(--g),transparent);}
+#preview-area .col-title{font-family:'Cinzel',serif;font-size:11px;font-weight:900;color:var(--gl);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:6px;opacity:.85;}
+#preview-area .col-answer{font-family:'Cinzel',serif;font-size:clamp(13px,3.8vw,18px);font-weight:900;color:var(--g);letter-spacing:.5px;line-height:1.3;display:block;text-shadow:0 0 10px var(--g);}
+#preview-area .col-answer.green{color:#00ff88;text-shadow:0 0 10px #00ff88;}
+#preview-area .col-answer.red{color:#ff4040;text-shadow:0 0 10px #ff4040;}
+#preview-area .col-note{font-family:'Cinzel',serif;font-size:10px;font-weight:700;color:rgba(255,200,150,.75);display:block;margin-top:4px;line-height:1.3;}
+
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+@keyframes crownshine{0%{left:-120%}50%{left:130%}100%{left:130%}}
+@keyframes arrowbounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <img class="topbar-logo" src="https://cdn.areabermain.club/assets/cdn/az5/2026/06/13/20260613/c47731e7d9c42705062ea078d5843b85/udintogel-logo-transparan.png" alt="Logo" onerror="this.style.display='none'">
+  <div class="topbar-title">⚡ GENERATOR PREDIKSI BOLA</div>
+</div>
+
+<div class="date-header">
+  <div class="date-sub">📅 Tanggal Otomatis</div>
+  <div class="date-val" id="dateVal">—</div>
+</div>
+
+<div class="layout">
+  <div class="left-panel">
+    <div class="panel-section">
+      <div class="section-title"><span>📊</span> INPUT PREDIKSI</div>
+      <div class="stats-mini">
+        <div class="stat-mini-item"><span class="stat-mini-num" id="statLiga">0</span><span class="stat-mini-lbl">Total Liga</span></div>
+        <div class="stat-mini-item"><span class="stat-mini-num" id="statMatch">0</span><span class="stat-mini-lbl">Total Match</span></div>
+        <div class="stat-mini-item"><span class="stat-mini-num" id="statLogo">✓</span><span class="stat-mini-lbl">Logo Tim</span></div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="section-title"><span>✏️</span> MASUKKAN DATA</div>
+      <div class="hint-box" style="margin-bottom:10px;">
+        <strong>Format:</strong><br>
+        NAMA LIGA<br>
+        TGL JAM WIB Tim1 VS Tim2 Skor1 : Skor2<br><br>
+        <strong>Contoh:</strong><br>
+        ENGLISH PREMIER LEAGUE<br>
+        08/02 21:00 WIB Brighton VS Chelsea 2 : 1<br><br>
+        <strong>Tag opsional di nama tim:</strong><br>
+        [W] = Women &nbsp;|&nbsp; [U21] = Under 21
+      </div>
+      <textarea class="input-textarea" id="inputData" placeholder="Masukkan prediksi di sini...
+
+Contoh:
+ENGLISH PREMIER LEAGUE
+08/02 21:00 WIB Brighton VS Crystal Palace 1 : 1
+08/02 23:00 WIB Liverpool VS Manchester City 2 : 2
+
+WOMEN WORLD CUP QUALIFIERS
+08/02 23:00 WIB Norway [W] VS Slovenia [W] 4 : 0
+
+UEFA U21 CHAMPIONSHIP
+08/02 21:00 WIB Moldova U21 VS Serbia U21 0 : 1" oninput="livePreview()"></textarea>
+
+      <div class="btn-row" style="margin-top:10px;">
+        <button class="btn btn-generate" onclick="generateHTML()">⚡ GENERATE</button>
+        <button class="btn btn-clear" onclick="clearAll()">🗑 CLEAR</button>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="section-title"><span>📄</span> OUTPUT HTML LENGKAP</div>
+      <textarea class="output-textarea" id="outputHTML" placeholder="Script HTML lengkap akan muncul di sini setelah klik GENERATE..." readonly></textarea>
+      <button class="btn-copy" onclick="copyHTML()" style="margin-top:8px;">📋 COPY SCRIPT HTML</button>
+      <div class="copy-toast" id="copyToast">✅ Script HTML berhasil disalin!</div>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="preview-label">👁 PREVIEW HASIL</div>
+    <div id="preview-area">
+      <div class="preview-empty"><span>⚽</span>Preview akan muncul di sini secara otomatis...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== DATE =====
+(function(){
+  var d=new Date();
+  var months=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+  var d2=new Date(d);d2.setDate(d2.getDate()+1);
+  document.getElementById('dateVal').textContent=
+    d.getDate()+' '+months[d.getMonth()]+' — '+d2.getDate()+' '+months[d2.getMonth()]+' '+d2.getFullYear();
+})();
+
+// ===== FLAG / LOGO DATABASE =====
+var FLAG_OVERRIDES = {
+  // ── PREMIER LEAGUE ──
+  'arsenal':'https://media.api-sports.io/football/teams/42.png',
+  'aston villa':'https://media.api-sports.io/football/teams/66.png',
+  'brentford':'https://media.api-sports.io/football/teams/55.png',
+  'brighton':'https://media.api-sports.io/football/teams/51.png',
+  'burnley':'https://media.api-sports.io/football/teams/44.png',
+  'chelsea':'https://media.api-sports.io/football/teams/49.png',
+  'crystal palace':'https://media.api-sports.io/football/teams/52.png',
+  'everton':'https://media.api-sports.io/football/teams/45.png',
+  'fulham':'https://media.api-sports.io/football/teams/36.png',
+  'ipswich':'https://media.api-sports.io/football/teams/57.png',
+  'leicester':'https://media.api-sports.io/football/teams/46.png',
+  'liverpool':'https://media.api-sports.io/football/teams/40.png',
+  'luton':'https://media.api-sports.io/football/teams/1360.png',
+  'manchester city':'https://media.api-sports.io/football/teams/50.png',
+  'manchester united':'https://media.api-sports.io/football/teams/33.png',
+  'man city':'https://media.api-sports.io/football/teams/50.png',
+  'man united':'https://media.api-sports.io/football/teams/33.png',
+  'man utd':'https://media.api-sports.io/football/teams/33.png',
+  'newcastle':'https://media.api-sports.io/football/teams/34.png',
+  'nottingham':'https://media.api-sports.io/football/teams/65.png',
+  'notts forest':'https://media.api-sports.io/football/teams/65.png',
+  'nffc':'https://media.api-sports.io/football/teams/65.png',
+  'sheffield united':'https://media.api-sports.io/football/teams/62.png',
+  'sheffield wednesday':'https://media.api-sports.io/football/teams/60.png',
+  'sheffield':'https://media.api-sports.io/football/teams/62.png',
+  'tottenham':'https://media.api-sports.io/football/teams/47.png',
+  'spurs':'https://media.api-sports.io/football/teams/47.png',
+  'west ham':'https://media.api-sports.io/football/teams/48.png',
+  'wolves':'https://media.api-sports.io/football/teams/39.png',
+  'wolverhampton':'https://media.api-sports.io/football/teams/39.png',
+  'bournemouth':'https://media.api-sports.io/football/teams/35.png',
+  'southampton':'https://media.api-sports.io/football/teams/41.png',
+  'sunderland':'https://media.api-sports.io/football/teams/56.png',
+  'watford':'https://media.api-sports.io/football/teams/38.png',
+  'norwich':'https://media.api-sports.io/football/teams/71.png',
+  'leeds':'https://media.api-sports.io/football/teams/63.png',
+  'middlesbrough':'https://media.api-sports.io/football/teams/69.png',
+  'stoke':'https://media.api-sports.io/football/teams/70.png',
+  'swansea':'https://media.api-sports.io/football/teams/72.png',
+  'cardiff':'https://media.api-sports.io/football/teams/67.png',
+  'hull':'https://media.api-sports.io/football/teams/322.png',
+  'blackburn':'https://media.api-sports.io/football/teams/76.png',
+  'bolton':'https://media.api-sports.io/football/teams/77.png',
+  'reading':'https://media.api-sports.io/football/teams/75.png',
+  'qpr':'https://media.api-sports.io/football/teams/68.png',
+  'wigan':'https://media.api-sports.io/football/teams/87.png',
+  'millwall':'https://media.api-sports.io/football/teams/83.png',
+  'coventry':'https://media.api-sports.io/football/teams/84.png',
+  'blackpool':'https://media.api-sports.io/football/teams/85.png',
+  'preston':'https://media.api-sports.io/football/teams/86.png',
+  'bristol city':'https://media.api-sports.io/football/teams/78.png',
+  'bristol rovers':'https://media.api-sports.io/football/teams/79.png',
+  'derby':'https://media.api-sports.io/football/teams/80.png',
+  'huddersfield':'https://media.api-sports.io/football/teams/81.png',
+  'birmingham':'https://media.api-sports.io/football/teams/74.png',
+  'west brom':'https://media.api-sports.io/football/teams/73.png',
+  'west bromwich':'https://media.api-sports.io/football/teams/73.png',
+  'rotherham':'https://media.api-sports.io/football/teams/88.png',
+  'plymouth':'https://media.api-sports.io/football/teams/89.png',
+  // ── LA LIGA ──
+  'barcelona':'https://media.api-sports.io/football/teams/529.png',
+  'real madrid':'https://media.api-sports.io/football/teams/541.png',
+  'atletico madrid':'https://media.api-sports.io/football/teams/530.png',
+  'atletico':'https://media.api-sports.io/football/teams/530.png',
+  'sevilla':'https://media.api-sports.io/football/teams/536.png',
+  'valencia':'https://media.api-sports.io/football/teams/532.png',
+  'villarreal':'https://media.api-sports.io/football/teams/533.png',
+  'real betis':'https://media.api-sports.io/football/teams/543.png',
+  'betis':'https://media.api-sports.io/football/teams/543.png',
+  'real sociedad':'https://media.api-sports.io/football/teams/548.png',
+  'sociedad':'https://media.api-sports.io/football/teams/548.png',
+  'athletic bilbao':'https://media.api-sports.io/football/teams/531.png',
+  'athletic':'https://media.api-sports.io/football/teams/531.png',
+  'osasuna':'https://media.api-sports.io/football/teams/727.png',
+  'celta vigo':'https://media.api-sports.io/football/teams/538.png',
+  'celta':'https://media.api-sports.io/football/teams/538.png',
+  'getafe':'https://media.api-sports.io/football/teams/546.png',
+  'rayo vallecano':'https://media.api-sports.io/football/teams/728.png',
+  'rayo':'https://media.api-sports.io/football/teams/728.png',
+  'cadiz':'https://media.api-sports.io/football/teams/724.png',
+  'almeria':'https://media.api-sports.io/football/teams/723.png',
+  'mallorca':'https://media.api-sports.io/football/teams/798.png',
+  'granada':'https://media.api-sports.io/football/teams/715.png',
+  'las palmas':'https://media.api-sports.io/football/teams/888.png',
+  'girona':'https://media.api-sports.io/football/teams/547.png',
+  'alaves':'https://media.api-sports.io/football/teams/542.png',
+  'espanyol':'https://media.api-sports.io/football/teams/534.png',
+  'leganes':'https://media.api-sports.io/football/teams/723.png',
+  'deportivo':'https://media.api-sports.io/football/teams/538.png',
+  'valladolid':'https://media.api-sports.io/football/teams/720.png',
+  // ── SERIE A ──
+  'juventus':'https://media.api-sports.io/football/teams/496.png',
+  'inter milan':'https://media.api-sports.io/football/teams/505.png',
+  'inter':'https://media.api-sports.io/football/teams/505.png',
+  'ac milan':'https://media.api-sports.io/football/teams/489.png',
+  'milan':'https://media.api-sports.io/football/teams/489.png',
+  'napoli':'https://media.api-sports.io/football/teams/492.png',
+  'roma':'https://media.api-sports.io/football/teams/497.png',
+  'lazio':'https://media.api-sports.io/football/teams/487.png',
+  'atalanta':'https://media.api-sports.io/football/teams/499.png',
+  'fiorentina':'https://media.api-sports.io/football/teams/502.png',
+  'torino':'https://media.api-sports.io/football/teams/503.png',
+  'bologna':'https://media.api-sports.io/football/teams/500.png',
+  'udinese':'https://media.api-sports.io/football/teams/494.png',
+  'sampdoria':'https://media.api-sports.io/football/teams/491.png',
+  'genoa':'https://media.api-sports.io/football/teams/495.png',
+  'cagliari':'https://media.api-sports.io/football/teams/490.png',
+  'sassuolo':'https://media.api-sports.io/football/teams/488.png',
+  'hellas verona':'https://media.api-sports.io/football/teams/504.png',
+  'verona':'https://media.api-sports.io/football/teams/504.png',
+  'lecce':'https://media.api-sports.io/football/teams/867.png',
+  'monza':'https://media.api-sports.io/football/teams/1579.png',
+  'salernitana':'https://media.api-sports.io/football/teams/514.png',
+  'spezia':'https://media.api-sports.io/football/teams/511.png',
+  'frosinone':'https://media.api-sports.io/football/teams/512.png',
+  'empoli':'https://media.api-sports.io/football/teams/511.png',
+  'venezia':'https://media.api-sports.io/football/teams/517.png',
+  'como':'https://media.api-sports.io/football/teams/867.png',
+  'parma':'https://media.api-sports.io/football/teams/498.png',
+  // ── BUNDESLIGA ──
+  'bayern':'https://media.api-sports.io/football/teams/157.png',
+  'dortmund':'https://media.api-sports.io/football/teams/165.png',
+  'bvb':'https://media.api-sports.io/football/teams/165.png',
+  'rb leipzig':'https://media.api-sports.io/football/teams/173.png',
+  'leipzig':'https://media.api-sports.io/football/teams/173.png',
+  'leverkusen':'https://media.api-sports.io/football/teams/168.png',
+  'bayer':'https://media.api-sports.io/football/teams/168.png',
+  'frankfurt':'https://media.api-sports.io/football/teams/169.png',
+  'wolfsburg':'https://media.api-sports.io/football/teams/161.png',
+  'hoffenheim':'https://media.api-sports.io/football/teams/167.png',
+  'freiburg':'https://media.api-sports.io/football/teams/160.png',
+  'augsburg':'https://media.api-sports.io/football/teams/170.png',
+  'union berlin':'https://media.api-sports.io/football/teams/182.png',
+  'hertha':'https://media.api-sports.io/football/teams/159.png',
+  'mainz':'https://media.api-sports.io/football/teams/164.png',
+  'cologne':'https://media.api-sports.io/football/teams/192.png',
+  'bochum':'https://media.api-sports.io/football/teams/176.png',
+  'schalke':'https://media.api-sports.io/football/teams/158.png',
+  'werder':'https://media.api-sports.io/football/teams/162.png',
+  'gladbach':'https://media.api-sports.io/football/teams/163.png',
+  'monchengladbach':'https://media.api-sports.io/football/teams/163.png',
+  'hannover':'https://media.api-sports.io/football/teams/166.png',
+  'heidenheim':'https://media.api-sports.io/football/teams/180.png',
+  'darmstadt':'https://media.api-sports.io/football/teams/179.png',
+  'st pauli':'https://media.api-sports.io/football/teams/186.png',
+  'holstein kiel':'https://media.api-sports.io/football/teams/185.png',
+  'kiel':'https://media.api-sports.io/football/teams/185.png',
+  'hamburg':'https://media.api-sports.io/football/teams/172.png',
+  'kaiserslautern':'https://media.api-sports.io/football/teams/177.png',
+  'nuremberg':'https://media.api-sports.io/football/teams/178.png',
+  'nurnberg':'https://media.api-sports.io/football/teams/178.png',
+  // ── LIGUE 1 ──
+  'psg':'https://media.api-sports.io/football/teams/85.png',
+  'paris saint-germain':'https://media.api-sports.io/football/teams/85.png',
+  'paris sg':'https://media.api-sports.io/football/teams/85.png',
+  'paris':'https://media.api-sports.io/football/teams/85.png',
+  'marseille':'https://media.api-sports.io/football/teams/81.png',
+  'lyon':'https://media.api-sports.io/football/teams/80.png',
+  'monaco':'https://media.api-sports.io/football/teams/91.png',
+  'lille':'https://media.api-sports.io/football/teams/79.png',
+  'rennes':'https://media.api-sports.io/football/teams/94.png',
+  'nice':'https://media.api-sports.io/football/teams/84.png',
+  'lens':'https://media.api-sports.io/football/teams/116.png',
+  'strasbourg':'https://media.api-sports.io/football/teams/95.png',
+  'nantes':'https://media.api-sports.io/football/teams/83.png',
+  'reims':'https://media.api-sports.io/football/teams/93.png',
+  'montpellier':'https://media.api-sports.io/football/teams/82.png',
+  'toulouse':'https://media.api-sports.io/football/teams/96.png',
+  'brest':'https://media.api-sports.io/football/teams/113.png',
+  'lorient':'https://media.api-sports.io/football/teams/112.png',
+  'metz':'https://media.api-sports.io/football/teams/111.png',
+  'havre':'https://media.api-sports.io/football/teams/109.png',
+  'clermont':'https://media.api-sports.io/football/teams/1134.png',
+  'angers':'https://media.api-sports.io/football/teams/78.png',
+  'auxerre':'https://media.api-sports.io/football/teams/107.png',
+  'guingamp':'https://media.api-sports.io/football/teams/108.png',
+  'saint-etienne':'https://media.api-sports.io/football/teams/97.png',
+  'saint etienne':'https://media.api-sports.io/football/teams/97.png',
+  // ── PORTUGAL / NETHERLANDS / SCOTLAND ──
+  'porto':'https://media.api-sports.io/football/teams/212.png',
+  'benfica':'https://media.api-sports.io/football/teams/211.png',
+  'sporting':'https://media.api-sports.io/football/teams/228.png',
+  'braga':'https://media.api-sports.io/football/teams/217.png',
+  'vitoria guimaraes':'https://media.api-sports.io/football/teams/220.png',
+  'ajax':'https://media.api-sports.io/football/teams/194.png',
+  'psv':'https://media.api-sports.io/football/teams/197.png',
+  'feyenoord':'https://media.api-sports.io/football/teams/196.png',
+  'az alkmaar':'https://media.api-sports.io/football/teams/193.png',
+  'alkmaar':'https://media.api-sports.io/football/teams/193.png',
+  'celtic':'https://media.api-sports.io/football/teams/257.png',
+  'rangers':'https://media.api-sports.io/football/teams/258.png',
+  'hearts':'https://media.api-sports.io/football/teams/259.png',
+  'hibernian':'https://media.api-sports.io/football/teams/260.png',
+  'aberdeen':'https://media.api-sports.io/football/teams/261.png',
+  // ── TURKEY / UKRAINE / OTHER EUROPE ──
+  'galatasaray':'https://media.api-sports.io/football/teams/357.png',
+  'fenerbahce':'https://media.api-sports.io/football/teams/359.png',
+  'besiktas':'https://media.api-sports.io/football/teams/358.png',
+  'trabzonspor':'https://media.api-sports.io/football/teams/356.png',
+  'shakhtar':'https://media.api-sports.io/football/teams/255.png',
+  'dynamo kyiv':'https://media.api-sports.io/football/teams/256.png',
+  'anderlecht':'https://media.api-sports.io/football/teams/244.png',
+  'club brugge':'https://media.api-sports.io/football/teams/245.png',
+  'brugge':'https://media.api-sports.io/football/teams/245.png',
+  'gent':'https://media.api-sports.io/football/teams/246.png',
+  'standard liege':'https://media.api-sports.io/football/teams/247.png',
+  'red bull salzburg':'https://media.api-sports.io/football/teams/322.png',
+  'salzburg':'https://media.api-sports.io/football/teams/322.png',
+  'rapid vienna':'https://media.api-sports.io/football/teams/323.png',
+  'slavia prague':'https://media.api-sports.io/football/teams/306.png',
+  'sparta prague':'https://media.api-sports.io/football/teams/307.png',
+  'panathinaikos':'https://media.api-sports.io/football/teams/396.png',
+  'olympiakos':'https://media.api-sports.io/football/teams/394.png',
+  'paok':'https://media.api-sports.io/football/teams/395.png',
+  'young boys':'https://media.api-sports.io/football/teams/282.png',
+  'basel':'https://media.api-sports.io/football/teams/280.png',
+  'copenhagen':'https://media.api-sports.io/football/teams/399.png',
+  'midtjylland':'https://media.api-sports.io/football/teams/400.png',
+  'rosenborg':'https://media.api-sports.io/football/teams/404.png',
+  'ferencvaros':'https://media.api-sports.io/football/teams/350.png',
+  'lech poznan':'https://media.api-sports.io/football/teams/349.png',
+  'legia':'https://media.api-sports.io/football/teams/348.png',
+  'steaua':'https://media.api-sports.io/football/teams/371.png',
+  'cska':'https://media.api-sports.io/football/teams/371.png',
+  'zenit':'https://media.api-sports.io/football/teams/373.png',
+  'spartak':'https://media.api-sports.io/football/teams/370.png',
+  // ── INDONESIA ──
+  'persija':'https://media.api-sports.io/football/teams/2672.png',
+  'persib':'https://media.api-sports.io/football/teams/2670.png',
+  'arema':'https://media.api-sports.io/football/teams/2671.png',
+  'bali united':'https://media.api-sports.io/football/teams/2676.png',
+  'pss sleman':'https://media.api-sports.io/football/teams/2673.png',
+  'persebaya':'https://media.api-sports.io/football/teams/2674.png',
+  'psm makassar':'https://media.api-sports.io/football/teams/2675.png',
+  // ── IRELAND ──
+  'shamrock rovers':'https://media.api-sports.io/football/teams/1497.png',
+  'shamrock':'https://media.api-sports.io/football/teams/1497.png',
+  'bohemian':'https://media.api-sports.io/football/teams/1498.png',
+  'bohemians':'https://media.api-sports.io/football/teams/1498.png',
+  'shelbourne':'https://media.api-sports.io/football/teams/1499.png',
+  'dundalk':'https://media.api-sports.io/football/teams/1500.png',
+  'drogheda united':'https://r2.thesportsdb.com/images/media/team/badge/w1j16u1582565320.png',
+  'drogheda':'https://r2.thesportsdb.com/images/media/team/badge/w1j16u1582565320.png',
+  'sligo rovers':'https://media.api-sports.io/football/teams/1503.png',
+  'sligo':'https://media.api-sports.io/football/teams/1503.png',
+  'derry city':'https://media.api-sports.io/football/teams/1504.png',
+  'derry':'https://media.api-sports.io/football/teams/1504.png',
+  'cork city':'https://media.api-sports.io/football/teams/1505.png',
+  'cork':'https://media.api-sports.io/football/teams/1505.png',
+  'waterford':'https://media.api-sports.io/football/teams/1506.png',
+  'athlone town':'https://r2.thesportsdb.com/images/media/team/badge/61tq6g1758171532.png',
+  'athlone':'https://r2.thesportsdb.com/images/media/team/badge/61tq6g1758171532.png',
+  'kerry fc':'https://r2.thesportsdb.com/images/media/team/badge/nxbjkl1679078647.png',
+  'kerry':'https://r2.thesportsdb.com/images/media/team/badge/nxbjkl1679078647.png',
+  'wexford':'https://r2.thesportsdb.com/images/media/team/badge/r1ythb1672950278.png',
+  'finn harps':'https://r2.thesportsdb.com/images/media/team/badge/pfu09n1579281537.png',
+  'galway united':'https://media.api-sports.io/football/teams/1512.png',
+  'galway':'https://media.api-sports.io/football/teams/1512.png',
+  'st patricks':'https://r2.thesportsdb.com/images/media/team/badge/jmcjrh1639005987.png',
+  'st patricks athletic':'https://r2.thesportsdb.com/images/media/team/badge/jmcjrh1639005987.png',
+  'saint patricks':'https://r2.thesportsdb.com/images/media/team/badge/jmcjrh1639005987.png',
+  // ── ICELAND ──
+  'breidablik':'https://media.api-sports.io/football/teams/1160.png',
+  'valur':'https://media.api-sports.io/football/teams/1161.png',
+  'keflavik':'https://media.api-sports.io/football/teams/1162.png',
+  'vikingur':'https://media.api-sports.io/football/teams/1163.png',
+  'vikingur reykjavik':'https://media.api-sports.io/football/teams/1163.png',
+  'hafnarfjordur':'https://media.api-sports.io/football/teams/1164.png',
+  'fh hafnarfjordur':'https://media.api-sports.io/football/teams/1164.png',
+  'fh':'https://media.api-sports.io/football/teams/1164.png',
+  'fjolnir':'https://media.api-sports.io/football/teams/1165.png',
+  'stjarnan':'https://media.api-sports.io/football/teams/1166.png',
+  'thor akureyri':'https://media.api-sports.io/football/teams/1167.png',
+  'ibv vestmannaeyjar':'https://r2.thesportsdb.com/images/media/team/badge/ibv.png',
+  'ibv':'https://r2.thesportsdb.com/images/media/team/badge/ibv.png',
+  'ia akranes':'https://r2.thesportsdb.com/images/media/team/badge/i4h9ih1579111324.png',
+  'akranes':'https://r2.thesportsdb.com/images/media/team/badge/i4h9ih1579111324.png',
+  // ── FINLAND ──
+  'hifk':'https://media.api-sports.io/football/teams/1090.png',
+  'hjk':'https://media.api-sports.io/football/teams/1091.png',
+  'ilves':'https://media.api-sports.io/football/teams/1092.png',
+  'inter turku':'https://media.api-sports.io/football/teams/1093.png',
+  'ktp':'https://media.api-sports.io/football/teams/1094.png',
+  'mariehamn':'https://media.api-sports.io/football/teams/1095.png',
+  'ifk mariehamn':'https://media.api-sports.io/football/teams/1095.png',
+  'seinajoki':'https://media.api-sports.io/football/teams/1096.png',
+  'lahti':'https://media.api-sports.io/football/teams/1097.png',
+  'vps':'https://media.api-sports.io/football/teams/1098.png',
+  'kups':'https://media.api-sports.io/football/teams/1100.png',
+  'haka':'https://media.api-sports.io/football/teams/1106.png',
+  'jaro':'https://media.api-sports.io/football/teams/1109.png',
+  'honka':'https://media.api-sports.io/football/teams/1110.png',
+  'pk-35':'https://media.api-sports.io/football/teams/13993.png',
+  'gnistan':'https://media.api-sports.io/football/teams/1102.png',
+  'oulu':'https://media.api-sports.io/football/teams/1101.png',
+  // ── SWEDEN ──
+  'hammarby':'https://media.api-sports.io/football/teams/364.png',
+  'djurgarden':'https://media.api-sports.io/football/teams/365.png',
+  'malmo':'https://media.api-sports.io/football/teams/366.png',
+  'aik':'https://media.api-sports.io/football/teams/367.png',
+  'kalmar':'https://media.api-sports.io/football/teams/368.png',
+  'norrkoping':'https://media.api-sports.io/football/teams/369.png',
+  'hacken':'https://media.api-sports.io/football/teams/3050.png',
+  'ifk gothenburg':'https://media.api-sports.io/football/teams/363.png',
+  'gothenburg':'https://media.api-sports.io/football/teams/363.png',
+  'goteborg':'https://media.api-sports.io/football/teams/363.png',
+  'helsingborgs':'https://media.api-sports.io/football/teams/361.png',
+  'helsingborg':'https://media.api-sports.io/football/teams/361.png',
+  'orebro':'https://media.api-sports.io/football/teams/362.png',
+  'sirius':'https://media.api-sports.io/football/teams/3041.png',
+  'gif sundsvall':'https://media.api-sports.io/football/teams/3033.png',
+  'sundsvall':'https://media.api-sports.io/football/teams/3033.png',
+  'varberg':'https://media.api-sports.io/football/teams/3051.png',
+  'halmstad':'https://media.api-sports.io/football/teams/3052.png',
+  'mjallby':'https://media.api-sports.io/football/teams/3037.png',
+  'degerfors':'https://media.api-sports.io/football/teams/3026.png',
+  'brommapojkarna':'https://media.api-sports.io/football/teams/3031.png',
+  'pitea':'https://r2.thesportsdb.com/images/media/team/badge/fzszy91617647761.png',
+  'umea':'https://media.api-sports.io/football/teams/6705.png',
+  // ── GEORGIA ──
+  'dinamo tbilisi':'https://media.api-sports.io/football/teams/10265.png',
+  'saburtalo':'https://media.api-sports.io/football/teams/10266.png',
+  'lokomotivi':'https://media.api-sports.io/football/teams/10267.png',
+  'torpedo kutaisi':'https://media.api-sports.io/football/teams/10268.png',
+  'dila gori':'https://media.api-sports.io/football/teams/10269.png',
+  'gagra':'https://media.api-sports.io/football/teams/10270.png',
+  // ── BELARUS ──
+  'bate borisov':'https://media.api-sports.io/football/teams/2644.png',
+  'bate':'https://media.api-sports.io/football/teams/2644.png',
+  'dinamo minsk':'https://media.api-sports.io/football/teams/2645.png',
+  'shakhter soligorsk':'https://media.api-sports.io/football/teams/2646.png',
+  'isloch':'https://media.api-sports.io/football/teams/2648.png',
+  'vitebsk':'https://media.api-sports.io/football/teams/2649.png',
+  'gomel':'https://media.api-sports.io/football/teams/2650.png',
+  'neman':'https://media.api-sports.io/football/teams/2653.png',
+  'naftan':'https://r2.thesportsdb.com/images/media/team/badge/e3hpub1734717224.png',
+  'belshina':'https://r2.thesportsdb.com/images/media/team/badge/btddt51656531272.png',
+  // ── LITHUANIA ──
+  'zalgiris':'https://media.api-sports.io/football/teams/10460.png',
+  'suduva':'https://media.api-sports.io/football/teams/10461.png',
+  'hegelmann':'https://media.api-sports.io/football/teams/10463.png',
+  'riteriai':'https://media.api-sports.io/football/teams/10464.png',
+  'panevezys':'https://media.api-sports.io/football/teams/10466.png',
+  'dziugas':'https://r2.thesportsdb.com/images/media/team/badge/y2f1mb1579201879.png',
+  // ── LATVIA ──
+  'riga fc':'https://media.api-sports.io/football/teams/10530.png',
+  'riga':'https://media.api-sports.io/football/teams/10530.png',
+  'rfs':'https://media.api-sports.io/football/teams/10531.png',
+  'valmiera':'https://media.api-sports.io/football/teams/10533.png',
+  'liepaja':'https://media.api-sports.io/football/teams/10534.png',
+  'metta':'https://media.api-sports.io/football/teams/10536.png',
+  // ── AUSTRALIA ──
+  'sydney fc':'https://media.api-sports.io/football/teams/755.png',
+  'sydney':'https://media.api-sports.io/football/teams/755.png',
+  'melbourne city':'https://media.api-sports.io/football/teams/744.png',
+  'melbourne victory':'https://media.api-sports.io/football/teams/743.png',
+  'melbourne':'https://media.api-sports.io/football/teams/743.png',
+  'western sydney':'https://media.api-sports.io/football/teams/747.png',
+  'western united':'https://media.api-sports.io/football/teams/3765.png',
+  'brisbane roar':'https://media.api-sports.io/football/teams/748.png',
+  'brisbane':'https://media.api-sports.io/football/teams/748.png',
+  'perth glory':'https://media.api-sports.io/football/teams/751.png',
+  'perth':'https://media.api-sports.io/football/teams/751.png',
+  'central coast':'https://media.api-sports.io/football/teams/752.png',
+  'newcastle jets':'https://media.api-sports.io/football/teams/753.png',
+  'wellington phoenix':'https://media.api-sports.io/football/teams/754.png',
+  'wellington':'https://media.api-sports.io/football/teams/754.png',
+  'macarthur':'https://media.api-sports.io/football/teams/3762.png',
+  'adelaide united':'https://media.api-sports.io/football/teams/745.png',
+  'adelaide':'https://media.api-sports.io/football/teams/745.png',
+  'heidelberg':'https://media.api-sports.io/football/teams/760.png',
+  'oakleigh':'https://media.api-sports.io/football/teams/761.png',
+  'south melbourne':'https://media.api-sports.io/football/teams/762.png',
+  'hume city':'https://media.api-sports.io/football/teams/2840.png',
+  'marconi':'https://r2.thesportsdb.com/images/media/team/badge/noeabj1742605073.png',
+  'manly':'https://r2.thesportsdb.com/images/media/team/badge/6a0bgw1736270513.png',
+  'blacktown':'https://r2.thesportsdb.com/images/media/team/badge/blacktown-city.png',
+  // ── BRAZIL ──
+  'botafogo':'https://media.api-sports.io/football/teams/124.png',
+  'flamengo':'https://media.api-sports.io/football/teams/127.png',
+  'fluminense':'https://media.api-sports.io/football/teams/128.png',
+  'vasco':'https://media.api-sports.io/football/teams/130.png',
+  'santos':'https://media.api-sports.io/football/teams/131.png',
+  'sao paulo':'https://media.api-sports.io/football/teams/121.png',
+  'atletico mineiro':'https://media.api-sports.io/football/teams/1062.png',
+  'palmeiras':'https://media.api-sports.io/football/teams/120.png',
+  'corinthians':'https://media.api-sports.io/football/teams/119.png',
+  'internacional':'https://media.api-sports.io/football/teams/116.png',
+  'gremio':'https://media.api-sports.io/football/teams/118.png',
+  'cruzeiro':'https://media.api-sports.io/football/teams/140.png',
+  'athletico paranaense':'https://media.api-sports.io/football/teams/125.png',
+  'athletico':'https://media.api-sports.io/football/teams/125.png',
+  'fortaleza':'https://media.api-sports.io/football/teams/136.png',
+  'ceara':'https://media.api-sports.io/football/teams/137.png',
+  'bahia':'https://media.api-sports.io/football/teams/132.png',
+  'vitoria':'https://media.api-sports.io/football/teams/133.png',
+  'coritiba':'https://media.api-sports.io/football/teams/126.png',
+  'goias':'https://media.api-sports.io/football/teams/141.png',
+  'chapecoense':'https://media.api-sports.io/football/teams/144.png',
+  'criciuma':'https://media.api-sports.io/football/teams/147.png',
+  'juventude':'https://media.api-sports.io/football/teams/149.png',
+  'sport recife':'https://media.api-sports.io/football/teams/129.png',
+  // ── CHILE ──
+  'colo colo':'https://media.api-sports.io/football/teams/2299.png',
+  'universidad de chile':'https://media.api-sports.io/football/teams/2300.png',
+  'universidad catolica':'https://media.api-sports.io/football/teams/2303.png',
+  'huachipato':'https://media.api-sports.io/football/teams/2304.png',
+  'cobresal':'https://media.api-sports.io/football/teams/2306.png',
+  'antofagasta':'https://media.api-sports.io/football/teams/2307.png',
+  'palestino':'https://media.api-sports.io/football/teams/2308.png',
+  'curico':'https://media.api-sports.io/football/teams/2310.png',
+  'ohiggins':'https://media.api-sports.io/football/teams/2313.png',
+  'iquique':'https://media.api-sports.io/football/teams/2314.png',
+  'magallanes':'https://media.api-sports.io/football/teams/2315.png',
+  // ── MOROCCO ──
+  'wydad':'https://media.api-sports.io/football/teams/2567.png',
+  'raja casablanca':'https://media.api-sports.io/football/teams/2568.png',
+  'raja':'https://media.api-sports.io/football/teams/2568.png',
+  'fus rabat':'https://media.api-sports.io/football/teams/2569.png',
+  'renaissance berkane':'https://media.api-sports.io/football/teams/2572.png',
+  'berkane':'https://media.api-sports.io/football/teams/2572.png',
+  'hassania agadir':'https://media.api-sports.io/football/teams/2573.png',
+  'ittihad tanger':'https://media.api-sports.io/football/teams/2574.png',
+  'olympique khouribga':'https://media.api-sports.io/football/teams/2575.png',
+  'mas fes':'https://media.api-sports.io/football/teams/2578.png',
+  'kawkab marrakech':'https://media.api-sports.io/football/teams/2579.png',
+  'moghreb tetouan':'https://media.api-sports.io/football/teams/2580.png',
+
+  // ── NATIONAL TEAMS (flags) ──
+  'mexico':'https://flagcdn.com/w320/mx.png',
+  'south africa':'https://flagcdn.com/w320/za.png',
+  'canada':'https://flagcdn.com/w320/ca.png',
+  'usa':'https://flagcdn.com/w320/us.png',
+  'united states':'https://flagcdn.com/w320/us.png',
+  'brazil':'https://flagcdn.com/w320/br.png',
+  'argentina':'https://flagcdn.com/w320/ar.png',
+  'france':'https://flagcdn.com/w320/fr.png',
+  'germany':'https://flagcdn.com/w320/de.png',
+  'england':'https://flagcdn.com/w320/gb-eng.png',
+  'spain':'https://flagcdn.com/w320/es.png',
+  'italy':'https://flagcdn.com/w320/it.png',
+  'portugal':'https://flagcdn.com/w320/pt.png',
+  'netherlands':'https://flagcdn.com/w320/nl.png',
+  'holland':'https://flagcdn.com/w320/nl.png',
+  'japan':'https://flagcdn.com/w320/jp.png',
+  'korea':'https://flagcdn.com/w320/kr.png',
+  'south korea':'https://flagcdn.com/w320/kr.png',
+  'north korea':'https://flagcdn.com/w320/kp.png',
+  'australia':'https://flagcdn.com/w320/au.png',
+  'indonesia':'https://flagcdn.com/w320/id.png',
+  'thailand':'https://flagcdn.com/w320/th.png',
+  'vietnam':'https://flagcdn.com/w320/vn.png',
+  'malaysia':'https://flagcdn.com/w320/my.png',
+  'philippines':'https://flagcdn.com/w320/ph.png',
+  'cambodia':'https://flagcdn.com/w320/kh.png',
+  'myanmar':'https://flagcdn.com/w320/mm.png',
+  'singapore':'https://flagcdn.com/w320/sg.png',
+  'norway':'https://flagcdn.com/w320/no.png',
+  'sweden':'https://flagcdn.com/w320/se.png',
+  'denmark':'https://flagcdn.com/w320/dk.png',
+  'finland':'https://flagcdn.com/w320/fi.png',
+  'poland':'https://flagcdn.com/w320/pl.png',
+  'ukraine':'https://flagcdn.com/w320/ua.png',
+  'turkey':'https://flagcdn.com/w320/tr.png',
+  'russia':'https://flagcdn.com/w320/ru.png',
+  'serbia':'https://flagcdn.com/w320/rs.png',
+  'croatia':'https://flagcdn.com/w320/hr.png',
+  'czech':'https://flagcdn.com/w320/cz.png',
+  'czechia':'https://flagcdn.com/w320/cz.png',
+  'slovakia':'https://flagcdn.com/w320/sk.png',
+  'belgium':'https://flagcdn.com/w320/be.png',
+  'switzerland':'https://flagcdn.com/w320/ch.png',
+  'austria':'https://flagcdn.com/w320/at.png',
+  'scotland':'https://flagcdn.com/w320/gb-sct.png',
+  'ireland':'https://flagcdn.com/w320/ie.png',
+  'wales':'https://flagcdn.com/w320/gb-wls.png',
+  'northern ireland':'https://flagcdn.com/w320/gb-nir.png',
+  'greece':'https://flagcdn.com/w320/gr.png',
+  'venezuela':'https://flagcdn.com/w320/ve.png',
+  'colombia':'https://flagcdn.com/w320/co.png',
+  'chile':'https://flagcdn.com/w320/cl.png',
+  'uruguay':'https://flagcdn.com/w320/uy.png',
+  'paraguay':'https://flagcdn.com/w320/py.png',
+  'peru':'https://flagcdn.com/w320/pe.png',
+  'ecuador':'https://flagcdn.com/w320/ec.png',
+  'bolivia':'https://flagcdn.com/w320/bo.png',
+  'china':'https://flagcdn.com/w320/cn.png',
+  'india':'https://flagcdn.com/w320/in.png',
+  'iran':'https://flagcdn.com/w320/ir.png',
+  'saudi':'https://flagcdn.com/w320/sa.png',
+  'saudi arabia':'https://flagcdn.com/w320/sa.png',
+  'nigeria':'https://flagcdn.com/w320/ng.png',
+  'ghana':'https://flagcdn.com/w320/gh.png',
+  'senegal':'https://flagcdn.com/w320/sn.png',
+  'morocco':'https://flagcdn.com/w320/ma.png',
+  'egypt':'https://flagcdn.com/w320/eg.png',
+  'algeria':'https://flagcdn.com/w320/dz.png',
+  'tunisia':'https://flagcdn.com/w320/tn.png',
+  'cameroon':'https://flagcdn.com/w320/cm.png',
+  'ivory coast':'https://flagcdn.com/w320/ci.png',
+  'mali':'https://flagcdn.com/w320/ml.png',
+  'costa rica':'https://flagcdn.com/w320/cr.png',
+  'panama':'https://flagcdn.com/w320/pa.png',
+  'honduras':'https://flagcdn.com/w320/hn.png',
+  'guatemala':'https://flagcdn.com/w320/gt.png',
+  'bosnia':'https://flagcdn.com/w320/ba.png',
+  'moldova':'https://flagcdn.com/w320/md.png',
+  'slovenia':'https://flagcdn.com/w320/si.png',
+  'albania':'https://flagcdn.com/w320/al.png',
+  'bulgaria':'https://flagcdn.com/w320/bg.png',
+  'romania':'https://flagcdn.com/w320/ro.png',
+  'hungary':'https://flagcdn.com/w320/hu.png',
+  'new zealand':'https://flagcdn.com/w320/nz.png',
+  'iceland':'https://flagcdn.com/w320/is.png',
+  'israel':'https://flagcdn.com/w320/il.png',
+  'georgia':'https://flagcdn.com/w320/ge.png',
+  'armenia':'https://flagcdn.com/w320/am.png',
+  'azerbaijan':'https://flagcdn.com/w320/az.png',
+  'belarus':'https://flagcdn.com/w320/by.png',
+  'estonia':'https://flagcdn.com/w320/ee.png',
+  'latvia':'https://flagcdn.com/w320/lv.png',
+  'lithuania':'https://flagcdn.com/w320/lt.png',
+  'luxembourg':'https://flagcdn.com/w320/lu.png',
+  'macedonia':'https://flagcdn.com/w320/mk.png',
+  'north macedonia':'https://flagcdn.com/w320/mk.png',
+  'montenegro':'https://flagcdn.com/w320/me.png',
+  'kosovo':'https://flagcdn.com/w320/xk.png',
+  'andorra':'https://flagcdn.com/w320/ad.png',
+  'gibraltar':'https://flagcdn.com/w320/gi.png',
+  'faroe islands':'https://flagcdn.com/w320/fo.png',
+  'faroe':'https://flagcdn.com/w320/fo.png',
+  'malta':'https://flagcdn.com/w320/mt.png',
+  'liechtenstein':'https://flagcdn.com/w320/li.png',
+  'san marino':'https://flagcdn.com/w320/sm.png',
+  'kazakhstan':'https://flagcdn.com/w320/kz.png',
+  'uzbekistan':'https://flagcdn.com/w320/uz.png',
+  'kyrgyzstan':'https://flagcdn.com/w320/kg.png',
+  'tajikistan':'https://flagcdn.com/w320/tj.png',
+  'turkmenistan':'https://flagcdn.com/w320/tm.png',
+  'pakistan':'https://flagcdn.com/w320/pk.png',
+  'bangladesh':'https://flagcdn.com/w320/bd.png',
+  'sri lanka':'https://flagcdn.com/w320/lk.png',
+  'nepal':'https://flagcdn.com/w320/np.png',
+  'bhutan':'https://flagcdn.com/w320/bt.png',
+  'maldives':'https://flagcdn.com/w320/mv.png',
+  'qatar':'https://flagcdn.com/w320/qa.png',
+  'uae':'https://flagcdn.com/w320/ae.png',
+  'united arab emirates':'https://flagcdn.com/w320/ae.png',
+  'kuwait':'https://flagcdn.com/w320/kw.png',
+  'bahrain':'https://flagcdn.com/w320/bh.png',
+  'oman':'https://flagcdn.com/w320/om.png',
+  'jordan':'https://flagcdn.com/w320/jo.png',
+  'iraq':'https://flagcdn.com/w320/iq.png',
+  'syria':'https://flagcdn.com/w320/sy.png',
+  'lebanon':'https://flagcdn.com/w320/lb.png',
+  'palestine':'https://flagcdn.com/w320/ps.png',
+  'libya':'https://flagcdn.com/w320/ly.png',
+  'kenya':'https://flagcdn.com/w320/ke.png',
+  'tanzania':'https://flagcdn.com/w320/tz.png',
+  'ethiopia':'https://flagcdn.com/w320/et.png',
+  'zambia':'https://flagcdn.com/w320/zm.png',
+  'zimbabwe':'https://flagcdn.com/w320/zw.png',
+  'angola':'https://flagcdn.com/w320/ao.png',
+  'mozambique':'https://flagcdn.com/w320/mz.png',
+  'madagascar':'https://flagcdn.com/w320/mg.png',
+  'uganda':'https://flagcdn.com/w320/ug.png',
+  'rwanda':'https://flagcdn.com/w320/rw.png',
+  'suriname':'https://flagcdn.com/w320/sr.png',
+  'trinidad':'https://flagcdn.com/w320/tt.png',
+  'trinidad and tobago':'https://flagcdn.com/w320/tt.png',
+  'jamaica':'https://flagcdn.com/w320/jm.png',
+  'haiti':'https://flagcdn.com/w320/ht.png',
+  'cuba':'https://flagcdn.com/w320/cu.png',
+  'dominican republic':'https://flagcdn.com/w320/do.png',
+  'puerto rico':'https://flagcdn.com/w320/pr.png',
+};
+
+// ===== IMPROVED getLogoUrl =====
+function getLogoUrl(teamName) {
+  // 1) Strip bracket tags like [W], [U21], [u23]
+  var raw = teamName.replace(/\s*\[.*?\]/g, '').trim();
+
+  // 2) Normalize: lowercase, strip common suffixes
+  function normalize(s) {
+    return s.toLowerCase()
+      // strip U21 / U23 / U18 etc (standalone word)
+      .replace(/\bu\s*\d{2}\b/gi, '')
+      // strip common club prefixes/suffixes
+      .replace(/\b(fc|sc|ac|bc|if|fk|sk|ik|sv|bk|afc|bfc|sfc|cf|sd|cd|rcd|ud|cp|ck|gd|nk|hk|fk|bsc|hnk|rk|nec|vv|go|rsc|rac|kas|krc|kv|oud|mv|hsc|tsv|vfb|vfl|tsg|rw|spvgg|jk|tf)\b/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  var name = normalize(raw);
+  // also try original raw lowercased (before stripping FC etc)
+  var nameOrig = raw.toLowerCase().trim();
+
+  // 3) Exact match (normalized)
+  if (FLAG_OVERRIDES[name]) return FLAG_OVERRIDES[name];
+  // 4) Exact match (original)
+  if (FLAG_OVERRIDES[nameOrig]) return FLAG_OVERRIDES[nameOrig];
+
+  // 5) Longest key CONTAINED in normalized name
+  var best = null, bestLen = 0;
+  for (var k in FLAG_OVERRIDES) {
+    if (name.indexOf(k) !== -1 && k.length > bestLen) {
+      best = FLAG_OVERRIDES[k]; bestLen = k.length;
+    }
+  }
+  if (best) return best;
+
+  // 6) Longest key CONTAINED in original name
+  bestLen = 0; best = null;
+  for (var k in FLAG_OVERRIDES) {
+    if (nameOrig.indexOf(k) !== -1 && k.length > bestLen) {
+      best = FLAG_OVERRIDES[k]; bestLen = k.length;
+    }
+  }
+  if (best) return best;
+
+  // 7) Normalized name CONTAINED in a key (reverse: team name is part of key)
+  if (name.length >= 4) {
+    for (var k in FLAG_OVERRIDES) {
+      if (k.indexOf(name) !== -1) return FLAG_OVERRIDES[k];
+    }
+  }
+
+  // 8) Word-by-word: each significant word (≥4 chars) of the team name tested against keys
+  var words = name.split(' ').filter(function(w) { return w.length >= 4; });
+  for (var wi = 0; wi < words.length; wi++) {
+    var w = words[wi];
+    // direct key lookup containing this word
+    if (FLAG_OVERRIDES[w]) return FLAG_OVERRIDES[w];
+    for (var k in FLAG_OVERRIDES) {
+      if (k.indexOf(w) !== -1 || w.indexOf(k) !== -1) {
+        if (k.length >= 4) return FLAG_OVERRIDES[k];
+      }
+    }
+  }
+
+  // 9) Try words from original name (before normalize stripping)
+  var wordsOrig = nameOrig.split(' ').filter(function(w) { return w.length >= 4; });
+  for (var wi = 0; wi < wordsOrig.length; wi++) {
+    var w = wordsOrig[wi];
+    if (FLAG_OVERRIDES[w]) return FLAG_OVERRIDES[w];
+    for (var k in FLAG_OVERRIDES) {
+      if ((k.indexOf(w) !== -1 || w.indexOf(k) !== -1) && k.length >= 4) {
+        return FLAG_OVERRIDES[k];
+      }
+    }
+  }
+
+  // 10) Fallback: colored initials avatar
+  var initials = raw.split(' ').slice(0, 2).map(function(w) { return w[0] || ''; }).join('').toUpperCase();
+  return 'https://ui-avatars.com/api/?name=' + encodeURIComponent(initials || raw.slice(0, 2))
+    + '&background=1f0800&color=ff6a00&bold=true&size=80&length=2&font-size=0.45&rounded=true';
+}
+
+// ===== PARSE INPUT =====
+function parseInput(raw) {
+  var lines = raw.split('\n');
+  var leagues = [];
+  var currentLeague = null;
+  // Matches: DATE TIME WIB TEAM1 VS TEAM2 SCORE1 : SCORE2
+  // Team names can contain [W], [U21] etc → captured with .+? (lazy) then VS separator
+  var reMatch = /^(\d{1,2}\/\d{2})\s+(\d{2}:\d{2})\s+WIB\s+(.+?)\s+VS\s+(.+?)\s+(\d+)\s*:\s*(\d+)\s*$/i;
+
+  lines.forEach(function(line) {
+    line = line.trim();
+    if (!line) return;
+    var m = reMatch.exec(line);
+    if (m) {
+      if (!currentLeague) {
+        currentLeague = { name: 'LAINNYA', matches: [] };
+        leagues.push(currentLeague);
+      }
+      currentLeague.matches.push({
+        date: m[1], time: m[2],
+        home: m[3].trim(), away: m[4].trim(),
+        scoreHome: m[5], scoreAway: m[6]
+      });
+    } else if (line.length > 2) {
+      // League name line (skip if it only contains bracket content)
+      if (/^\[.*\]$/.test(line)) return;
+      currentLeague = { name: line.replace(/🏆/g, '').trim().toUpperCase(), matches: [] };
+      leagues.push(currentLeague);
+    }
+  });
+  return leagues.filter(function(l) { return l.matches.length > 0; });
+}
+
+// ===== AUTO PREDICTION =====
+function autoPred(scoreHome, scoreAway) {
+  var h = parseInt(scoreHome), a = parseInt(scoreAway);
+  var total = h + a;
+  var handicap, ou, result, score;
+  if (h > a) {
+    result = { cls: 'green', txt: 'Home Win' };
+    handicap = { cls: 'green', txt: 'Home -' + (h - a === 1 ? '0.5' : (h - a - 1) + '.5') };
+  } else if (h < a) {
+    result = { cls: 'green', txt: 'Away Win' };
+    handicap = { cls: 'green', txt: 'Away -' + (a - h === 1 ? '0.5' : (a - h - 1) + '.5') };
+  } else {
+    result = { cls: '', txt: 'Draw' };
+    handicap = { cls: '', txt: 'Draw / AH 0' };
+  }
+  ou = total >= 3
+    ? { cls: 'green', txt: 'Over ' + (total <= 3 ? '2.5' : '3.5') }
+    : { cls: 'red', txt: 'Under ' + (total <= 1 ? '1.5' : '2.5') };
+  score = { txt: scoreHome + ' - ' + scoreAway };
+  return { handicap: handicap, ou: ou, result: result, score: score };
+}
+
+// ===== ESCAPE HTML =====
+function esc(s) {
+  return s.replace(/[&<>"]/g, function(c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+  });
+}
+
+// ===== BUILD LEAGUE HTML =====
+function buildLeagueHTML(league) {
+  var html = '';
+  var leagueKey = esc(league.name);
+  html += '<div class="league-block" data-league="' + leagueKey + '">';
+  html += '<div class="league-inner">';
+  html += '<div class="league-crown">';
+  html += '<div class="crown-name">🏆 ' + leagueKey + ' 🏆</div>';
+  html += '<div class="match-count">' + league.matches.length + ' Match</div>';
+  html += '</div>';
+  league.matches.forEach(function(m, i) {
+    var parity = i % 2 === 0 ? 'even' : 'odd';
+    var pred = autoPred(m.scoreHome, m.scoreAway);
+    var homeKey = esc(m.home);
+    var awayKey = esc(m.away);
+    // Display name: strip bracket tags for display clarity
+    var homeDisplay = esc(m.home.replace(/\s*\[.*?\]/g, '').trim());
+    var awayDisplay = esc(m.away.replace(/\s*\[.*?\]/g, '').trim());
+    var teamsData = (m.home + ' ' + m.away).toLowerCase().replace(/[&<>]/g, '');
+    var homeLogo = getLogoUrl(m.home);
+    var awayLogo = getLogoUrl(m.away);
+    html += '<div class="match-card ' + parity + '" data-teams="' + teamsData + '" onclick="toggleCard(this)">';
+    html += '<div class="match-row">';
+    html += '<div class="team-side left"><div class="box-image"><img class="team-logo" src="' + homeLogo + '" alt="' + homeKey + '" onerror="this.src=\'https://ui-avatars.com/api/?name=' + encodeURIComponent(m.home.slice(0,2)) + '&background=1f0800&color=ff6a00&bold=true&size=80&length=2&rounded=true\'" /></div><span class="team-name">' + homeDisplay + '</span></div>';
+    html += '<div class="score-center"><div class="score-num">' + m.scoreHome + ' : ' + m.scoreAway + '</div><div class="match-dt">' + m.date + '<br/>' + m.time + ' WIB</div></div>';
+    html += '<div class="team-side right"><div class="box-image"><img class="team-logo" src="' + awayLogo + '" alt="' + awayKey + '" onerror="this.src=\'https://ui-avatars.com/api/?name=' + encodeURIComponent(m.away.slice(0,2)) + '&background=1f0800&color=ff6a00&bold=true&size=80&length=2&rounded=true\'" /></div><span class="team-name">' + awayDisplay + '</span></div>';
+    html += '<div class="chev"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></div>';
+    html += '</div>';
+    html += '<div class="pred-panel"><div class="pred-inner"><div class="pred-grid">';
+    html += '<div class="pred-col accent-' + (pred.handicap.cls || 'gold') + '"><span class="col-title">Handicap</span><span class="col-answer ' + pred.handicap.cls + '">' + pred.handicap.txt + '</span><span class="col-note">' + (pred.handicap.cls === 'green' ? 'Unggul' : 'Imbang ketat') + '</span></div>';
+    html += '<div class="pred-col accent-' + (pred.ou.cls === 'green' ? 'green' : 'red') + '"><span class="col-title">Over / Under</span><span class="col-answer ' + pred.ou.cls + '">' + pred.ou.txt + '</span><span class="col-note">' + (pred.ou.cls === 'green' ? 'Laga Terbuka' : 'Laga Ketat') + '</span></div>';
+    html += '<div class="pred-col accent-' + (pred.result.cls || 'gold') + '"><span class="col-title">1X2</span><span class="col-answer ' + pred.result.cls + '">' + pred.result.txt + '</span><span class="col-note">' + (pred.result.txt.indexOf('Home') !== -1 ? homeDisplay : pred.result.txt.indexOf('Away') !== -1 ? awayDisplay : 'Hasil imbang') + '</span></div>';
+    html += '<div class="pred-col accent-gold"><span class="col-title">Skor Akurat</span><span class="col-answer">' + pred.score.txt + '</span><span class="col-note">Top Pick</span></div>';
+    html += '</div></div></div>';
+    html += '</div>';
+  });
+  html += '</div></div>';
+  return html;
+}
+
+function buildFilterOptions(leagues) {
+  var opts = '<option value="all">Semua Liga</option>';
+  leagues.forEach(function(l) {
+    var k = esc(l.name);
+    opts += '<option value="' + k + '">🏆 ' + k + '</option>';
+  });
+  return opts;
+}
+
+// ===== LIVE PREVIEW =====
+var previewTimer = null;
+function livePreview() {
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(function() { generateHTML(true); }, 300);
+}
+
+// ===== MAIN GENERATE =====
+function generateHTML(previewOnly) {
+  var raw = document.getElementById('inputData').value.trim();
+  if (!raw) {
+    document.getElementById('preview-area').innerHTML = '<div class="preview-empty"><span>⚽</span>Masukkan data prediksi lalu klik GENERATE...</div>';
+    document.getElementById('statLiga').textContent = '0';
+    document.getElementById('statMatch').textContent = '0';
+    document.getElementById('outputHTML').value = '';
+    return;
+  }
+  var leagues = parseInput(raw);
+  var totalMatch = 0;
+  leagues.forEach(function(l) { totalMatch += l.matches.length; });
+  document.getElementById('statLiga').textContent = leagues.length;
+  document.getElementById('statMatch').textContent = totalMatch;
+  document.getElementById('statLogo').textContent = '✓';
+
+  var previewHTML = '';
+  previewHTML += '<div class="stats-bar">';
+  previewHTML += '<div class="stat-item"><span class="stat-num">' + leagues.length + '</span><span class="stat-lbl">Liga</span></div>';
+  previewHTML += '<div class="stat-item"><span class="stat-num">' + totalMatch + '</span><span class="stat-lbl">Pertandingan</span></div>';
+  previewHTML += '<div class="stat-item"><span class="stat-num">100%</span><span class="stat-lbl">Terupdate</span></div>';
+  previewHTML += '</div>';
+  previewHTML += '<div class="marquee-wrap"><div class="marquee-inner">🔥 PREDIKSI BOLA TERUPDATE ! Tunggu apa lagi? Daftar dan nikmati pengalaman taruhan terbaik dengan peluang besar! 🔥&nbsp;&nbsp;&nbsp;&nbsp;🔥 PREDIKSI BOLA TERUPDATE ! Tunggu apa lagi? Daftar dan nikmati pengalaman taruhan terbaik dengan peluang besar! 🔥</div></div>';
+  previewHTML += '<div class="filter-wrap">';
+  previewHTML += '<div><span class="filter-label">🏆 Pilih Liga</span><div class="select-box"><select class="fselect" id="leagueFilter" onchange="filterLeague(this.value)">' + buildFilterOptions(leagues) + '</select></div></div>';
+  previewHTML += '<div><span class="filter-label">🔍 Cari Tim</span><div class="search-box"><span class="search-icon">⚽</span><input class="fsearch" id="teamSearch" type="text" placeholder="Nama tim..." oninput="searchTeam(this.value)" /></div></div>';
+  previewHTML += '</div>';
+  previewHTML += '<div class="tap-hint"><span class="hint-arrow">⬇</span><span class="hint-text">Klik pertandingan di bawah untuk melihat prediksi</span><span class="hint-arrow">⬇</span></div>';
+  leagues.forEach(function(l) { previewHTML += buildLeagueHTML(l); });
+  document.getElementById('preview-area').innerHTML = previewHTML;
+
+  if (!previewOnly) {
+    document.getElementById('outputHTML').value = buildFullHTML(leagues, totalMatch);
+  }
+}
+
+// ===== BUILD FULL STANDALONE HTML =====
+function buildFullHTML(leagues, totalMatch) {
+  var leagueBody = '';
+  leagues.forEach(function(l) { leagueBody += buildLeagueHTML(l); });
+  var filterOpts = buildFilterOptions(leagues);
+
+  return '<!-- Generated by WATITOTO Generator -->\n' +
+'<style>\n' +
+'*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}\n' +
+':root{--g:#ff6a00;--gl:#ff9a3c;--gd:#ff6a00aa;--gs:#ff6a0033;--gneon:0 0 8px #ff6a00,0 0 20px #ff6a00,0 0 40px #ff9a3c;--cr:#fff3e0;}\n' +
+'body{background:#000;font-family:\'Poppins\',sans-serif;color:var(--cr);min-height:100vh;overflow-x:hidden;}\n' +
+'.stats-bar{width:90%;margin:0 auto 14px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}\n' +
+'.stat-item{background:linear-gradient(180deg,#1f0800,#0a0300);border:2px solid var(--g);border-radius:13px;padding:11px 6px;text-align:center;box-shadow:0 0 14px var(--gs);}\n' +
+'.stat-num{font-family:\'Cinzel\',serif;font-size:20px;font-weight:900;color:var(--g);line-height:1;display:block;text-shadow:var(--gneon);}\n' +
+'.stat-lbl{font-size:9px;font-weight:700;color:var(--gl);opacity:.8;letter-spacing:1.2px;text-transform:uppercase;display:block;margin-top:3px;}\n' +
+'.marquee-wrap{overflow:hidden;white-space:nowrap;width:90%;margin:0 auto 16px;border:3px solid var(--g);border-radius:15px;background:linear-gradient(135deg,#1a0500,#000,#1a0500);padding:15px 0;box-shadow:0 0 24px var(--gd);}\n' +
+'.marquee-inner{display:inline-block;animation:marquee 38s linear infinite;padding-left:100%;font-size:clamp(11px,2.8vw,14px);font-weight:900;color:var(--g);text-shadow:0 0 12px var(--g),0 0 24px var(--gl);letter-spacing:1.5px;}\n' +
+'@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}\n' +
+'.filter-wrap{width:90%;margin:0 auto 14px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}\n' +
+'.filter-label{font-size:10px;color:var(--gl);opacity:.9;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:6px;display:block;}\n' +
+'.select-box{position:relative;}.select-box::after{content:"\\25BC";position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--g);font-size:10px;pointer-events:none;}\n' +
+'.fselect{width:100%;padding:9px 30px 9px 12px;background:rgba(0,0,0,.9);border:2px solid var(--g);border-radius:10px;color:var(--g);font-size:12px;font-weight:700;appearance:none;-webkit-appearance:none;outline:none;cursor:pointer;}\n' +
+'.fselect option{background:#0a0200;color:#fff;}\n' +
+'.search-box{position:relative;}.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--g);font-size:13px;pointer-events:none;}\n' +
+'.fsearch{width:100%;padding:9px 12px 9px 30px;background:rgba(0,0,0,.9);border:2px solid var(--g);border-radius:10px;color:var(--g);font-size:12px;font-weight:700;outline:none;font-family:\'Poppins\',sans-serif;}\n' +
+'.fsearch::placeholder{color:var(--gd);}\n' +
+'.tap-hint{width:90%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border:2px solid var(--g);border-radius:10px;background:var(--gs);}\n' +
+'.hint-arrow{font-size:16px;display:inline-block;animation:arrowbounce 1s ease-in-out infinite;}\n' +
+'@keyframes arrowbounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}\n' +
+'.hint-text{font-family:\'Cinzel\',serif;font-size:clamp(9px,2.2vw,11px);font-weight:700;color:var(--g);opacity:.85;letter-spacing:1px;}\n' +
+'.league-block{width:90%;margin:0 auto 22px;border:3px solid var(--g);border-radius:15px;padding:5px;background:rgba(0,0,0,.6);box-shadow:0 0 28px var(--gd),0 0 60px #ff6a0022;}\n' +
+'.league-inner{border-radius:10px;overflow:hidden;border:1px solid var(--gd);}\n' +
+'.league-crown{background:linear-gradient(180deg,#200a00,#0d0500);padding:8px 10px 6px;display:flex;align-items:center;justify-content:center;position:relative;border-bottom:1px solid var(--gs);overflow:hidden;}\n' +
+'.league-crown::after{content:\'\';position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,150,50,.3),transparent);transform:skewX(-20deg);animation:crownshine 1.8s ease-in-out infinite;}\n' +
+'@keyframes crownshine{0%{left:-120%}50%{left:130%}100%{left:130%}}\n' +
+'.crown-name{font-family:\'Cinzel\',serif;font-size:clamp(9px,2.4vw,12px);font-weight:900;color:var(--g);letter-spacing:2px;text-transform:uppercase;text-align:center;text-shadow:0 0 10px var(--g),0 0 20px var(--gl);}\n' +
+'.match-count{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:linear-gradient(135deg,var(--g),var(--gl));color:#000;font-family:\'Cinzel\',serif;font-size:8px;font-weight:900;padding:2px 8px;border-radius:20px;white-space:nowrap;}\n' +
+'.match-card{border-bottom:1px solid #2a1500;cursor:pointer;user-select:none;}.match-card:last-child{border-bottom:none;}.match-card.hidden{display:none;}\n' +
+'.match-row{display:flex;align-items:center;padding:10px;transition:background .2s;}\n' +
+'.match-card.even .match-row{background:linear-gradient(180deg,#1e0800,#160500);}\n' +
+'.match-card.odd .match-row{background:linear-gradient(180deg,#160500,#1e0800);}\n' +
+'.match-card.open .match-row{background:linear-gradient(180deg,#2a1200,#1a0700)!important;}\n' +
+'.match-card:not(.open) .match-row:hover{background:linear-gradient(135deg,#ff6a00,#ff9a3c)!important;}\n' +
+'.match-card:not(.open) .match-row:hover .team-name,.match-card:not(.open) .match-row:hover .score-num,.match-card:not(.open) .match-row:hover .match-dt{color:#000!important;text-shadow:none!important;}\n' +
+'.team-side{flex:1;display:flex;align-items:center;gap:7px;min-width:0;}.team-side.right{flex-direction:row-reverse;}\n' +
+'.box-image{position:relative;width:38px;height:38px;flex-shrink:0;}\n' +
+'.box-image img.team-logo{width:38px;height:38px;object-fit:contain;display:block;filter:drop-shadow(0 0 4px rgba(0,0,0,.7));transition:transform .4s ease,filter .4s ease;}\n' +
+'.match-row:hover .box-image img.team-logo{transform:scale(1.45);filter:drop-shadow(0 0 14px var(--g)) brightness(1.2);}\n' +
+'.team-name{font-size:clamp(8px,2vw,11px);font-weight:700;color:var(--cr);line-height:1.3;word-break:break-word;}.team-side.right .team-name{text-align:right;}\n' +
+'.score-center{flex-shrink:0;width:80px;text-align:center;padding:0 4px;}\n' +
+'.score-num{font-family:\'Cinzel\',serif;font-size:clamp(15px,4vw,20px);font-weight:900;color:var(--g);text-shadow:var(--gneon);letter-spacing:3px;line-height:1;margin-bottom:4px;}\n' +
+'.match-dt{font-size:clamp(8px,1.8vw,10px);font-weight:700;color:var(--gl);opacity:.9;line-height:1.5;}\n' +
+'.chev{width:18px;flex-shrink:0;margin-left:4px;display:flex;align-items:center;justify-content:center;}\n' +
+'.chev svg{transition:transform .25s;color:var(--gd);}.match-card.open .chev svg{transform:rotate(180deg);color:var(--g);}\n' +
+'.pred-panel{overflow:hidden;max-height:0;transition:max-height .32s ease;}.match-card.open .pred-panel{max-height:220px;}\n' +
+'.pred-inner{background:#0a0300;border-top:1px solid var(--gs);padding:10px 12px;}\n' +
+'.pred-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}\n' +
+'@media(max-width:440px){.pred-grid{grid-template-columns:repeat(2,1fr);}}\n' +
+'.pred-col{background:rgba(255,106,0,.06);border:1px solid var(--gs);border-radius:9px;padding:8px 6px;text-align:center;position:relative;overflow:hidden;}\n' +
+'.pred-col::before{content:\'\';position:absolute;top:0;left:0;right:0;height:3px;}\n' +
+'.pred-col.accent-green::before{background:linear-gradient(90deg,transparent,#00ff88,transparent);}\n' +
+'.pred-col.accent-red::before{background:linear-gradient(90deg,transparent,#ff4040,transparent);}\n' +
+'.pred-col.accent-gold::before{background:linear-gradient(90deg,transparent,var(--g),transparent);}\n' +
+'.col-title{font-family:\'Cinzel\',serif;font-size:11px;font-weight:900;color:var(--gl);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:6px;opacity:.85;}\n' +
+'.col-answer{font-family:\'Cinzel\',serif;font-size:clamp(13px,3.8vw,18px);font-weight:900;color:var(--g);letter-spacing:.5px;line-height:1.3;display:block;text-shadow:0 0 10px var(--g);}\n' +
+'.col-answer.green{color:#00ff88;text-shadow:0 0 10px #00ff88;}.col-answer.red{color:#ff4040;text-shadow:0 0 10px #ff4040;}\n' +
+'.col-note{font-family:\'Cinzel\',serif;font-size:10px;font-weight:700;color:rgba(255,200,150,.75);display:block;margin-top:4px;line-height:1.3;}\n' +
+'</style>\n' +
+'<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />\n' +
+'<div class="stats-bar">\n' +
+'<div class="stat-item"><span class="stat-num">' + leagues.length + '</span><span class="stat-lbl">Liga</span></div>\n' +
+'<div class="stat-item"><span class="stat-num">' + totalMatch + '</span><span class="stat-lbl">Pertandingan</span></div>\n' +
+'<div class="stat-item"><span class="stat-num">100%</span><span class="stat-lbl">Terupdate</span></div>\n' +
+'</div>\n' +
+'<div class="marquee-wrap"><div class="marquee-inner">🔥 PREDIKSI BOLA TERUPDATE ! Tunggu apa lagi? Daftar dan nikmati pengalaman taruhan terbaik dengan peluang besar! 🔥&nbsp;&nbsp;&nbsp;&nbsp;🔥 PREDIKSI BOLA TERUPDATE ! Tunggu apa lagi? Daftar dan nikmati pengalaman taruhan terbaik dengan peluang besar! 🔥</div></div>\n' +
+'<div class="filter-wrap">\n' +
+'<div><span class="filter-label">🏆 Pilih Liga</span><div class="select-box"><select class="fselect" id="leagueFilter" onchange="filterLeague(this.value)">' + filterOpts + '</select></div></div>\n' +
+'<div><span class="filter-label">🔍 Cari Tim</span><div class="search-box"><span class="search-icon">⚽</span><input class="fsearch" id="teamSearch" type="text" placeholder="Nama tim..." oninput="searchTeam(this.value)" /></div></div>\n' +
+'</div>\n' +
+'<div class="tap-hint"><span class="hint-arrow">⬇</span><span class="hint-text">Klik pertandingan di bawah untuk melihat prediksi</span><span class="hint-arrow">⬇</span></div>\n' +
+leagueBody + '\n' +
+'<script>\n' +
+'var openCard=null;\n' +
+'function toggleCard(card){if(openCard&&openCard!==card)openCard.classList.remove("open");card.classList.toggle("open");openCard=card.classList.contains("open")?card:null;}\n' +
+'function filterLeague(val){document.getElementById("teamSearch").value="";document.querySelectorAll(".match-card").forEach(function(c){c.classList.remove("hidden");});document.querySelectorAll(".league-block").forEach(function(b){b.style.display=(val==="all"||b.dataset.league===val)?"":"none";});}\n' +
+'function searchTeam(val){document.getElementById("leagueFilter").value="all";document.querySelectorAll(".league-block").forEach(function(b){b.style.display="";});var q=val.trim().toLowerCase();document.querySelectorAll(".match-card").forEach(function(c){if(!q){c.classList.remove("hidden");return;}var teams=c.dataset.teams||"";c.classList.toggle("hidden",teams.indexOf(q)===-1);});document.querySelectorAll(".league-block").forEach(function(b){var visible=b.querySelectorAll(".match-card:not(.hidden)").length;b.style.display=visible?"":"none";});}\n' +
+'<\/script>';
+}
+
+// ===== COPY =====
+function copyHTML() {
+  var ta = document.getElementById('outputHTML');
+  if (!ta.value) { alert('Generate dulu!'); return; }
+  navigator.clipboard.writeText(ta.value).then(function() {
+    showToast();
+  }).catch(function() {
+    ta.select(); document.execCommand('copy'); showToast();
+  });
+}
+function showToast() {
+  var t = document.getElementById('copyToast');
+  t.style.display = 'block';
+  setTimeout(function() { t.style.display = 'none'; }, 2500);
+}
+
+// ===== CLEAR =====
+function clearAll() {
+  document.getElementById('inputData').value = '';
+  document.getElementById('outputHTML').value = '';
+  document.getElementById('preview-area').innerHTML = '<div class="preview-empty"><span>⚽</span>Preview akan muncul di sini secara otomatis...</div>';
+  document.getElementById('statLiga').textContent = '0';
+  document.getElementById('statMatch').textContent = '0';
+  document.getElementById('statLogo').textContent = '✓';
+}
+
+// ===== FILTER FUNCTIONS (preview) =====
+function filterLeague(val) {
+  document.getElementById('teamSearch').value = '';
+  document.querySelectorAll('#preview-area .match-card').forEach(function(c) { c.classList.remove('hidden'); });
+  document.querySelectorAll('#preview-area .league-block').forEach(function(b) {
+    b.style.display = (val === 'all' || b.dataset.league === val) ? '' : 'none';
+  });
+}
+function searchTeam(val) {
+  document.getElementById('leagueFilter').value = 'all';
+  document.querySelectorAll('#preview-area .league-block').forEach(function(b) { b.style.display = ''; });
+  var q = val.trim().toLowerCase();
+  document.querySelectorAll('#preview-area .match-card').forEach(function(c) {
+    if (!q) { c.classList.remove('hidden'); return; }
+    c.classList.toggle('hidden', (c.dataset.teams || '').indexOf(q) === -1);
+  });
+  document.querySelectorAll('#preview-area .league-block').forEach(function(b) {
+    b.style.display = b.querySelectorAll('.match-card:not(.hidden)').length ? '' : 'none';
+  });
+}
+function toggleCard(card) {
+  document.querySelectorAll('#preview-area .match-card.open').forEach(function(c) {
+    if (c !== card) c.classList.remove('open');
+  });
+  card.classList.toggle('open');
+}
+</script>
+</body>
+</html>
