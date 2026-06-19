@@ -782,19 +782,64 @@ var FLAG_OVERRIDES = {
 
 // ===== IMPROVED getLogoUrl =====
 function getLogoUrl(teamName) {
-  // 1) Strip bracket tags like [W], [U21], [u23]
+
   var raw = teamName.replace(/\s*\[.*?\]/g, '').trim();
 
-  // 2) Normalize: lowercase, strip common suffixes
   function normalize(s) {
     return s.toLowerCase()
-      // strip U21 / U23 / U18 etc (standalone word)
-      .replace(/\bu\s*\d{2}\b/gi, '')
-      // strip common club prefixes/suffixes
-      .replace(/\b(fc|sc|ac|bc|if|fk|sk|ik|sv|bk|afc|bfc|sfc|cf|sd|cd|rcd|ud|cp|ck|gd|nk|hk|fk|bsc|hnk|rk|nec|vv|go|rsc|rac|kas|krc|kv|oud|mv|hsc|tsv|vfb|vfl|tsg|rw|spvgg|jk|tf)\b/g, '')
+      .replace(/\bu\d{2}\b/g, '')
+      .replace(/\b(fc|sc|ac|bc|if|fk|sk|ik|sv|bk|afc|bfc|sfc|cf|sd|cd|rcd|ud|cp|ck|gd|nk|hk|bsc|hnk|rk|nec|vv|go|rsc|rac|kas|krc|kv|oud|mv|hsc|tsg|rw|spvgg)\b/g, '')
+      .replace(/[^a-z0-9\s]/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
   }
+
+  function similarity(a, b) {
+    let aw = a.split(' ');
+    let bw = b.split(' ');
+    let match = 0;
+
+    for (let i = 0; i < aw.length; i++) {
+      for (let j = 0; j < bw.length; j++) {
+        if (aw[i] === bw[j]) match++;
+      }
+    }
+
+    return match / Math.max(aw.length, bw.length);
+  }
+
+  var name = normalize(raw);
+
+  // exact match
+  if (FLAG_OVERRIDES[name]) return FLAG_OVERRIDES[name];
+
+  // AI fuzzy match
+  var bestKey = null;
+  var bestScore = 0;
+
+  for (var k in FLAG_OVERRIDES) {
+    var score = similarity(name, k);
+    if (score > bestScore) {
+      bestScore = score;
+      bestKey = k;
+    }
+  }
+
+  if (bestScore >= 0.4 && bestKey) {
+    return FLAG_OVERRIDES[bestKey];
+  }
+
+  // contains match fallback
+  for (var k in FLAG_OVERRIDES) {
+    if (name.indexOf(k) !== -1) return FLAG_OVERRIDES[k];
+  }
+
+  // initials fallback
+  var initials = raw.split(' ').slice(0,2).map(w => w[0] || '').join('').toUpperCase();
+
+  return 'https://ui-avatars.com/api/?name=' +
+    encodeURIComponent(initials || raw.slice(0,2)) +
+    '&background=1f0800&color=ff6a00&bold=true&size=80&length=2&rounded=true';
 
   var name = normalize(raw);
   // also try original raw lowercased (before stripping FC etc)
